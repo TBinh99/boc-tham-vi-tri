@@ -3,7 +3,7 @@
   "sample": false,
   "team": "FC T8",
   "matchNo": 0,
-  "updatedAt": 1790654153372,
+  "updatedAt": 1790654171121,
   "players": [
     {
       "id": "p1",
@@ -52,7 +52,7 @@
       "num": 9,
       "name": "Bình",
       "here": true,
-      "pref": "nogk"
+      "pref": "any"
     },
     {
       "id": "p11",
