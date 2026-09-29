@@ -3,7 +3,7 @@
   "sample": false,
   "team": "FC T8",
   "matchNo": 0,
-  "updatedAt": 1790654171121,
+  "updatedAt": 1790654412345,
   "players": [
     {
       "id": "p1",
@@ -72,7 +72,7 @@
       "id": "p17",
       "num": 12,
       "name": "Hảo",
-      "here": true,
+      "here": false,
       "pref": "any"
     }
   ],
@@ -88,8 +88,7 @@
       "p8",
       "p9",
       "p11",
-      "p14",
-      "p17"
+      "p14"
     ],
     "locked": [],
     "status": "draft",
@@ -100,8 +99,8 @@
     "kickoff": "2026-10-01T18:00",
     "venue": "Garmuda - Sân số 2",
     "schedule": {
-      "at": 1790838000000,
-      "seed": 392160986,
+      "at": 1790656200000,
+      "seed": 4229382653,
       "done": false
     }
   },
