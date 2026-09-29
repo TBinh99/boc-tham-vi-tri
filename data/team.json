@@ -3,7 +3,7 @@
   "sample": false,
   "team": "FC T8",
   "matchNo": 0,
-  "updatedAt": 1790653986412,
+  "updatedAt": 1790654133648,
   "players": [
     {
       "id": "p1",
@@ -97,8 +97,8 @@
     "editOf": null,
     "rolledAt": null,
     "auto": false,
-    "kickoff": "2026-10-03T19:30",
-    "venue": "Sân số 2",
+    "kickoff": "2026-10-01T18:00",
+    "venue": "Garmuda - Sân số 2",
     "schedule": {
       "at": 1791023400000,
       "seed": 1292232495,
