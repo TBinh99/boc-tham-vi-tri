@@ -3,7 +3,7 @@
   "sample": false,
   "team": "FC T8",
   "matchNo": 0,
-  "updatedAt": 1790653929383,
+  "updatedAt": 1790653986412,
   "players": [
     {
       "id": "p1",
@@ -78,42 +78,32 @@
   ],
   "lineup": {
     "f": "7-1231",
-    "slots": {
-      "gk": [
-        "p1"
-      ],
-      "cbl": [
-        "p4",
-        "p14"
-      ],
-      "cbr": [
-        "p5",
-        "x8vy46fo"
-      ],
-      "lm": [
-        "p11"
-      ],
-      "cm": [
-        "p8"
-      ],
-      "rm": [
-        "p7",
-        "p17"
-      ],
-      "st": [
-        "p9"
-      ]
-    },
-    "waiting": [],
+    "slots": {},
+    "waiting": [
+      "p1",
+      "x8vy46fo",
+      "p4",
+      "p5",
+      "p7",
+      "p8",
+      "p9",
+      "p11",
+      "p14",
+      "p17"
+    ],
     "locked": [],
     "status": "draft",
     "matchId": null,
     "editOf": null,
-    "rolledAt": 1790687700000,
+    "rolledAt": null,
     "auto": false,
     "kickoff": "2026-10-03T19:30",
     "venue": "Sân số 2",
-    "schedule": null
+    "schedule": {
+      "at": 1791023400000,
+      "seed": 1292232495,
+      "done": false
+    }
   },
   "history": []
 }
