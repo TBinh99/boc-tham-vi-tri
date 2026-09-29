@@ -30,7 +30,7 @@ Không có server. Dữ liệu cả đội nằm trong [`data/team.json`](data/t
 2. Mở trang bằng link riêng của đội trưởng, tức là link thường thêm `#doi-truong` ở cuối (ví dụ `https://<tai-khoan>.github.io/boc-tham-vi-tri/#doi-truong`). Bảng **Chế độ đội trưởng** tự mở ra. Dán token rồi bấm **Kết nối GitHub**. Tên tài khoản và tên repo được tự điền từ địa chỉ trang.
 3. Từ giờ trên máy đó bạn random, chốt, hẹn giờ… Mỗi lần lưu là một commit sửa `data/team.json`. Pages cập nhật sau khoảng 1 phút. Trang của anh em tự kiểm tra bản mới mỗi 1,5 phút.
 
-Anh em mở link thường chỉ xem được: không có nút Random, Chốt, không sửa danh sách, và không thấy nút Đội trưởng. Chỉ máy đã kết nối token mới lưu được vào repo.
+Link thường luôn chỉ xem, kể cả trên máy đội trưởng: không có nút Random, Chốt, không sửa danh sách. Muốn sửa thì mở link `#doi-truong` trên máy đã kết nối token. Anh em không thấy nút Đội trưởng, và không có token thì không lưu được gì vào repo.
 
 Token chỉ lưu trong trình duyệt của đội trưởng và chỉ gửi tới `api.github.com`. Mọi trang GitHub Pages của cùng một tài khoản dùng chung địa chỉ gốc `<tai-khoan>.github.io`, nên hãy dùng token **chỉ cấp cho repo này** và có hạn dùng. Bấm **Thoát chế độ đội trưởng** để xoá token khỏi máy.
 

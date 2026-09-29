@@ -34,6 +34,8 @@ var DATA_PATH = 'data/team.json';
 // Teammates never see the captain button; the captain opens the page with this at the end of the link.
 var CAPTAIN_HASH = 'doi-truong';
 function captainLink(){ return location.hash.replace('#', '') === CAPTAIN_HASH; }
+// This browser has captain access saved (token or local edits). It only takes effect on the captain link.
+function hasCaptainSetup(){ return !!(lsGet(LS_GH) || lsGet(LS_LOCAL)); }
 var LS_VIEW = 'bttv-3d', LS_ME = 'bttv-me', LS_GH = 'bttv-github', LS_LOCAL = 'bttv-local-state', LS_DRAFT = 'bttv-draft', SS_UI = 'bttv-ui';
 
 // ---------- helpers ----------
@@ -293,7 +295,7 @@ function restoreDraft(){
 
 async function boot(){
   mountShell(); render();
-  var c = ghCfg(), localRaw = lsGet(LS_LOCAL);
+  var c = captainLink() ? ghCfg() : null, localRaw = captainLink() ? lsGet(LS_LOCAL) : null;
   if (c){
     try { var got = await ghLoad(c); state = sanitize(got.state) || blankState(); store = { kind: 'github', sha: got.sha, error: '' }; restoreDraft(); }
     catch (e) { await loadAsViewer(); store.error = 'Chưa kết nối được GitHub: ' + e.message + ' Mở Cài đặt đội trưởng để sửa.'; }
@@ -305,14 +307,18 @@ async function boot(){
   if (!checkSchedule(false)) render();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ renderPitch(); });
   if (captainLink() && !editable()) openCaptain();
-  window.addEventListener('hashchange', function(){ renderHeader(); if (captainLink() && !editable() && !ui.capOpen) openCaptain(); });
+  // switching between the normal link and the captain link starts the page over in the right mode
+  window.addEventListener('hashchange', function(){ location.reload(); });
   setInterval(tick, 1000);
   setInterval(refreshPublic, 90000);
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) refreshPublic(); });
 }
 
 // ---------- captain settings ----------
-function openCaptain(){ ui.capOpen = true; renderCaptain(); var f = $('#cap-owner'); if (f) f.focus(); }
+function openCaptain(){
+  if (!captainLink()){ location.hash = CAPTAIN_HASH; return; }
+  ui.capOpen = true; renderCaptain(); var f = $('#cap-owner'); if (f) f.focus();
+}
 function closeCaptain(){ ui.capOpen = false; renderCaptain(); var b = $('#cap-btn'); if (b) b.focus(); }
 function capVal(id){ var el = $('#' + id); return el ? el.value.trim() : ''; }
 function capError(msg){ var e = $('#cap-err'); if (e) e.textContent = msg || ''; }
@@ -351,6 +357,7 @@ function localEdit(){
 }
 async function exitCaptain(){
   lsDel(LS_GH); lsDel(LS_LOCAL); lsDel(LS_DRAFT);
+  history.replaceState(null, '', location.pathname + location.search);
   dirty = false; selected = null; ui.capOpen = false; renderCaptain();
   await loadAsViewer(); normalize();
   if (!checkSchedule(false)) render();
@@ -916,7 +923,8 @@ function renderHeader(){
   var b = $('#badge'), txt = { github: 'Lưu lên GitHub', local: 'Bản thử trên máy này' }[store.kind];
   b.hidden = !txt; b.className = 'badge ' + (store.kind === 'github' ? 'cloud' : 'local'); b.textContent = txt || '';
   if (store.kind === 'github'){ var c = ghCfg(); if (c) b.title = c.owner + '/' + c.repo + ' · ' + c.path; }
-  var cb = $('#cap-btn'); cb.hidden = loading || (!editable() && !captainLink()); cb.textContent = editable() ? 'Cài đặt' : 'Đội trưởng';
+  var cb = $('#cap-btn'); cb.hidden = loading || (!editable() && !captainLink() && !hasCaptainSetup());
+  cb.textContent = editable() ? 'Cài đặt' : (captainLink() ? 'Đội trưởng' : 'Chế độ đội trưởng');
   $('#v3d').setAttribute('aria-pressed', String(view3d));
   $('#v2d').setAttribute('aria-pressed', String(!view3d));
 }
@@ -1025,7 +1033,8 @@ function renderMatch(){
   var skip = {}; skip[L0.matchId || ''] = 1; skip[L0.editOf || ''] = 1;
   var past = pastByPlayer(state.history.filter(function(m){ return !skip[m.id]; }));
   if (store.error) h += '<div class="note">' + esc(store.error) + '</div>';
-  if (store.kind === 'view' && state.players.length) h += '<div class="note info">Đây là đội hình đội trưởng xếp. Chọn tên của bạn ở ô “Xem vị trí của” để biết mình đá đâu.</div>';
+  if (store.kind === 'view' && hasCaptainSetup() && !captainLink()) h += '<div class="note info"><span>Đây là link xem, giống anh em thấy. Máy này đã lưu quyền đội trưởng: mở link đội trưởng để random và lưu.</span><button type="button" class="btn btn-sm" data-act="cap-open">Mở chế độ đội trưởng</button></div>';
+  else if (store.kind === 'view' && state.players.length) h += '<div class="note info">Đây là đội hình đội trưởng xếp. Chọn tên của bạn ở ô “Xem vị trí của” để biết mình đá đâu.</div>';
   if (store.kind === 'local') h += '<div class="note">Bạn đang sửa bản thử trên máy này. Anh em không thấy thay đổi này. Muốn cả đội thấy thì mở Cài đặt, kết nối GitHub hoặc tải file team.json rồi commit vào repo.</div>';
   // match time + place
   var ko = parseKick(L0.kickoff);
