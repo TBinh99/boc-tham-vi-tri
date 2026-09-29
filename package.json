@@ -1,0 +1,10 @@
+{
+  "name": "boc-tham-vi-tri",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Random vị trí đá bóng cho đội, chạy trên GitHub Pages",
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node tests/lineup.test.js"
+  }
+}

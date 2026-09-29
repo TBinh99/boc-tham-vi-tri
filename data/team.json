@@ -1,0 +1,120 @@
+{
+  "updatedAt": null,
+  "v": 2,
+  "sample": false,
+  "team": "FC T8",
+  "matchNo": 0,
+  "players": [
+    {
+      "id": "p1",
+      "num": 1,
+      "name": "Hoàng",
+      "here": true,
+      "pref": "gk"
+    },
+    {
+      "id": "x8vy46fo",
+      "num": 2,
+      "name": "Huy",
+      "here": true,
+      "pref": "any"
+    },
+    {
+      "id": "p4",
+      "num": 4,
+      "name": "Vỹ",
+      "here": true,
+      "pref": "any"
+    },
+    {
+      "id": "p5",
+      "num": 5,
+      "name": "Đại",
+      "here": true,
+      "pref": "any"
+    },
+    {
+      "id": "p7",
+      "num": 7,
+      "name": "T.Anh",
+      "here": true,
+      "pref": "any"
+    },
+    {
+      "id": "p8",
+      "num": 8,
+      "name": "Sơn",
+      "here": true,
+      "pref": "any"
+    },
+    {
+      "id": "p9",
+      "num": 9,
+      "name": "Bình",
+      "here": true,
+      "pref": "nogk"
+    },
+    {
+      "id": "p11",
+      "num": 11,
+      "name": "Trường",
+      "here": true,
+      "pref": "any"
+    },
+    {
+      "id": "p14",
+      "num": 3,
+      "name": "Linh",
+      "here": true,
+      "pref": "any"
+    },
+    {
+      "id": "p17",
+      "num": 12,
+      "name": "Hảo",
+      "here": true,
+      "pref": "any"
+    }
+  ],
+  "lineup": {
+    "f": "7-1231",
+    "slots": {
+      "gk": [
+        "p1"
+      ],
+      "cbl": [
+        "p4",
+        "p14"
+      ],
+      "cbr": [
+        "p5"
+      ],
+      "lm": [
+        "p11"
+      ],
+      "cm": [
+        "p8"
+      ],
+      "rm": [
+        "p7",
+        "p17"
+      ],
+      "st": [
+        "p9"
+      ]
+    },
+    "waiting": [
+      "x8vy46fo"
+    ],
+    "locked": [],
+    "status": "draft",
+    "matchId": null,
+    "editOf": null,
+    "rolledAt": 1790687700000,
+    "auto": false,
+    "kickoff": "2026-10-03T19:30",
+    "venue": "Sân số 2",
+    "schedule": null
+  },
+  "history": []
+}

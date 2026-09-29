@@ -1,0 +1,17 @@
+name: test
+
+# Mỗi lần đội trưởng bấm Lưu là một commit sửa data/team.json, không cần chạy test cho những commit đó.
+on:
+  push:
+    paths-ignore: ['data/**']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm test
