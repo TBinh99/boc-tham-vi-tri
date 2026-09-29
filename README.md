@@ -33,6 +33,8 @@ Không có server. Dữ liệu cả đội nằm trong [`data/team.json`](data/t
 
 Link thường luôn chỉ xem, kể cả trên máy đội trưởng: không có nút Random, Chốt, không sửa danh sách. Muốn sửa thì mở link `#doi-truong` trên máy đã kết nối token. Anh em không thấy nút Đội trưởng, và không có token thì không lưu được gì vào repo.
 
+Sửa mà chưa bấm Lưu thì trang giữ lại trên máy (tải lại trang không mất). Muốn bỏ thì bấm **Bỏ thay đổi** ở thanh dưới cùng, trang quay về bản đang lưu trên GitHub. Kết quả bốc thăm hẹn giờ thì máy nào cũng tự ra giống nhau, bấm **Chốt đội hình** để lưu vào lịch sử, hoặc **Random** để thay bằng kết quả khác.
+
 Token chỉ lưu trong trình duyệt của đội trưởng và chỉ gửi tới `api.github.com`. Mọi trang GitHub Pages của cùng một tài khoản dùng chung địa chỉ gốc `<tai-khoan>.github.io`, nên hãy dùng token **chỉ cấp cho repo này** và có hạn dùng. Bấm **Thoát chế độ đội trưởng** để xoá token khỏi máy.
 
 Không muốn dùng token? Chọn **Chỉ sửa trên máy này**. Sửa xong bấm **Tải file team.json**, rồi tự thay file `data/team.json` trong repo và commit.

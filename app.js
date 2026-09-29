@@ -363,6 +363,23 @@ async function exitCaptain(){
   if (!checkSchedule(false)) render();
   toast('Đã thoát chế độ đội trưởng. Token đã xoá khỏi máy này.');
 }
+async function discardChanges(){
+  selected = null; ui.armedDel = null; ui.copyText = null;
+  if (store.kind === 'github'){
+    lsDel(LS_DRAFT); dirty = false; ui.dirtyMsg = '';
+    try { var got = await ghLoad(ghCfg()); store.sha = got.sha; state = sanitize(got.state) || state; }
+    catch (e) { toast('Chưa tải lại được từ GitHub: ' + e.message); normalize(); render(); return; }
+    normalize(); if (!checkSchedule(false)) render();
+    toast('Đã bỏ thay đổi, quay về bản đang lưu trên GitHub.');
+  } else if (store.kind === 'local'){
+    var s = null;
+    try { s = sanitize(JSON.parse(await fetchPublic())); } catch (e) {}
+    if (!s){ toast('Chưa tải lại được dữ liệu của trang. Thử lại sau.'); render(); return; }
+    state = s; lsSet(LS_LOCAL, JSON.stringify(state));
+    normalize(); if (!checkSchedule(false)) render();
+    toast('Đã bỏ bản thử, quay về đội hình đang có trên trang.');
+  }
+}
 function exportJSON(){
   var blob = new Blob([JSON.stringify(state, null, 2) + '\n'], { type: 'application/json' });
   var a = document.createElement('a');
@@ -408,9 +425,10 @@ function checkSchedule(animate){
   var res = computeLineup(Object.assign(rollInputs(), { rand: mulberry32(sc.seed) }));
   var L0 = lu();
   L0.slots = res.slots; L0.waiting = res.waiting; L0.rolledAt = sc.at; L0.auto = true; sc.done = true;
-  ui.dirtyMsg = 'Đã bốc thăm theo giờ hẹn. Bấm Chốt đội hình để lưu vào lịch sử.';
   ui.animCards = animate && !reducedMotion();
-  commit();
+  // Every browser gets this same result from the saved data, so it is not an unsaved change.
+  // The captain presses Chốt đội hình to put it in the history.
+  normalize(); render();
   if (animate) toast('Đã bốc thăm xong. Chọn tên của bạn để xem vị trí.');
   return true;
 }
@@ -851,6 +869,10 @@ function onAppClick(e){
   else if (act === 'lock') toggleLock(arg);
   else if (act === 'unselect'){ selected = null; render(); }
   else if (act === 'save') save(null, 'Cập nhật đội hình');
+  else if (act === 'discard'){
+    if (ui.armedDel !== 'discard'){ ui.armedDel = 'discard'; render(); return; }
+    discardChanges();
+  }
   else if (act === 'add') doAdd();
   else if (act === 'sched-set') setSchedule();
   else if (act === 'sched-cancel') cancelSchedule();
@@ -1046,7 +1068,8 @@ function renderMatch(){
   if (store.error) h += '<div class="note">' + esc(store.error) + '</div>';
   if (store.kind === 'view' && hasCaptainSetup() && !captainLink()) h += '<div class="note info"><span>Đây là link xem, giống anh em thấy. Máy này đã lưu quyền đội trưởng: mở link đội trưởng để random và lưu.</span><button type="button" class="btn btn-sm" data-act="cap-open">Mở chế độ đội trưởng</button></div>';
   else if (store.kind === 'view' && state.players.length) h += '<div class="note info">Đây là đội hình đội trưởng xếp. Chọn tên của bạn ở ô “Xem vị trí của” để biết mình đá đâu.</div>';
-  if (store.kind === 'local') h += '<div class="note">Bạn đang sửa bản thử trên máy này. Anh em không thấy thay đổi này. Muốn cả đội thấy thì mở Cài đặt, kết nối GitHub hoặc tải file team.json rồi commit vào repo.</div>';
+  if (store.kind === 'local') h += '<div class="note"><span>Bạn đang sửa bản thử trên máy này. Anh em không thấy thay đổi này. Muốn cả đội thấy thì mở Cài đặt, kết nối GitHub hoặc tải file team.json rồi commit vào repo.</span>' +
+    '<button type="button" class="btn btn-sm' + (ui.armedDel === 'discard' ? ' del arm' : '') + '" data-act="discard">' + (ui.armedDel === 'discard' ? 'Bấm lần nữa để bỏ' : 'Bỏ bản thử') + '</button></div>';
   // match time + place
   var ko = parseKick(L0.kickoff);
   if (ed){
@@ -1178,7 +1201,8 @@ function renderSavebar(){
   var sb = $('#savebar'); if (!sb) return;
   var show = store.kind === 'github' && (dirty || saving);
   sb.hidden = !show;
-  if (show) sb.innerHTML = saving ? '<span>Đang lưu lên GitHub…</span>' : '<span>' + esc(ui.dirtyMsg || 'Có thay đổi chưa lưu lên GitHub.') + '</span><button type="button" class="btn btn-sm" data-act="save">Lưu lên GitHub</button>';
+  if (show) sb.innerHTML = saving ? '<span>Đang lưu lên GitHub…</span>' : '<span>' + esc(ui.dirtyMsg || 'Có thay đổi chưa lưu lên GitHub.') + '</span><button type="button" class="btn btn-sm" data-act="save">Lưu lên GitHub</button>' +
+    '<button type="button" class="btn btn-sm alt' + (ui.armedDel === 'discard' ? ' arm' : '') + '" data-act="discard">' + (ui.armedDel === 'discard' ? 'Bấm lần nữa để bỏ' : 'Bỏ thay đổi') + '</button>';
   var tb = $('#toast'); if (tb) tb.style.bottom = show ? '' : 'calc(20px + env(safe-area-inset-bottom,0px))';
 }
 
