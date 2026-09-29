@@ -1,9 +1,9 @@
 {
-  "updatedAt": null,
   "v": 2,
   "sample": false,
   "team": "FC T8",
   "matchNo": 0,
+  "updatedAt": 1790653929383,
   "players": [
     {
       "id": "p1",
@@ -87,7 +87,8 @@
         "p14"
       ],
       "cbr": [
-        "p5"
+        "p5",
+        "x8vy46fo"
       ],
       "lm": [
         "p11"
@@ -103,9 +104,7 @@
         "p9"
       ]
     },
-    "waiting": [
-      "x8vy46fo"
-    ],
+    "waiting": [],
     "locked": [],
     "status": "draft",
     "matchId": null,
