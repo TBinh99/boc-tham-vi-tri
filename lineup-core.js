@@ -145,7 +145,33 @@ function computeLineup(opts){
   return { slots: out, waiting: [] };
 }
 
-var api = { W_APPEAR: W_APPEAR, hungarian: hungarian, mulberry32: mulberry32, positionCost: positionCost, pastByPlayer: pastByPlayer, pickExtras: pickExtras, computeLineup: computeLineup };
+// Switch formation without a new draw: each occupied position (with whoever is on it, pairs stay
+// together) moves to the closest spot in the new formation, staying in its line when it can.
+// Distances are in pitch metres (x spans 58 m, y spans 100 m); changing line costs 12 m; the keeper never moves.
+// Returns {slots:{slotId:[pid]}, waiting:[pid]} — waiting only when the new formation has fewer spots.
+function remapLineup(fromSlots, toSlots, assigned){
+  var units = fromSlots.filter(function(s){ return (assigned[s.id] || []).length; });
+  var n = Math.max(units.length, toSlots.length), M = [];
+  for (var i = 0; i < n; i++){
+    var row = [];
+    for (var j = 0; j < n; j++){
+      var u = units[i], t = toSlots[j];
+      if (!u || !t){ row.push(0); continue; }
+      var dx = (u.x - t.x) * 29, dy = (u.y - t.y) * 100, c = Math.sqrt(dx * dx + dy * dy);
+      if (u.role !== t.role) c += (u.role === 'GK' || t.role === 'GK') ? 1000 : 12;
+      row.push(c);
+    }
+    M.push(row);
+  }
+  var ans = hungarian(M), out = {}, waiting = [];
+  units.forEach(function(u, i){
+    var t = toSlots[ans[i]];
+    if (t) out[t.id] = assigned[u.id].slice(); else waiting = waiting.concat(assigned[u.id]);
+  });
+  return { slots: out, waiting: waiting };
+}
+
+var api = { W_APPEAR: W_APPEAR, remapLineup: remapLineup, hungarian: hungarian, mulberry32: mulberry32, positionCost: positionCost, pastByPlayer: pastByPlayer, pickExtras: pickExtras, computeLineup: computeLineup };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.LineupCore = api;
 })(this);

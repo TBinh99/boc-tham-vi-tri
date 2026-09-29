@@ -1,7 +1,7 @@
 // Kiểm tra thuật toán xếp vị trí trong lineup-core.js.
 // Chạy: npm test   (thoát mã 0 = đạt)
 
-const { computeLineup, pastByPlayer, mulberry32 } = require('../lineup-core.js');
+const { computeLineup, pastByPlayer, mulberry32, remapLineup } = require('../lineup-core.js');
 
 let failures = 0;
 function check(ok, msg) { if (!ok) { failures++; console.log('FAIL ' + msg); } }
@@ -101,6 +101,27 @@ for (const [label, slots, n] of [['sân 7', SEVEN, 9], ['sân 11', ELEVEN, 15]])
   const short = computeLineup({ slots: SEVEN, players: team(5), fixed: {}, past: {}, formation: '7' });
   check(short.slots.gk && short.slots.gk.length === 1, 'short-handed: goal is filled');
   check(placed(short).length === 5 && Object.keys(short.slots).length === 5, 'short-handed: 5 positions filled, none shared');
+}
+
+// 7. Switching 2-3-1 <-> 3-2-1 keeps everyone: keeper stays, pairs stay together, only one position changes line.
+{
+  const P = (id, role, x, y) => ({ id, role, x, y });
+  const F231 = [P('gk','GK',0,.035), P('cbl','DF',-.36,.225), P('cbr','DF',.36,.225), P('lm','MF',-.78,.4), P('cm','MF',0,.38), P('rm','MF',.78,.4), P('st','FW',0,.65)];
+  const F321 = [P('gk','GK',0,.035), P('lb','DF',-.66,.27), P('cb','DF',0,.25), P('rb','DF',.66,.27), P('cml','MF',-.34,.42), P('cmr','MF',.34,.42), P('st','FW',0,.62)];
+  const start = { gk: ['p1'], cbl: ['p4', 'p14'], cbr: ['p5'], lm: ['p11'], cm: ['p8'], rm: ['p7', 'p17'], st: ['p9'] };
+  const role = (slots, sid) => slots.find(s => s.id === sid).role;
+  const where = (lineup, slots) => { const m = {}; for (const sid in lineup) for (const pid of lineup[sid]) m[pid] = { sid, role: role(slots, sid), with: lineup[sid].slice().sort().join() }; return m; };
+  const before = where(start, F231);
+  const there = remapLineup(F231, F321, start);
+  const after = where(there.slots, F321);
+  const total = Object.values(start).flat().length;
+  check(Object.keys(after).length === total && there.waiting.length === 0, 'remap 2-3-1 -> 3-2-1 keeps all ' + total + ' players');
+  check(after.p1 && after.p1.sid === 'gk', 'remap keeps the keeper in goal');
+  check(after.p4.with === after.p14.with && after.p7.with === after.p17.with, 'remap keeps shared positions together');
+  const moved = new Set(Object.keys(after).filter(pid => after[pid].role !== before[pid].role).map(pid => after[pid].with));
+  check(moved.size === 1, 'remap 2-3-1 -> 3-2-1 moves exactly one position to another line (moved ' + moved.size + ')');
+  const back = remapLineup(F321, F231, there.slots);
+  check(Object.values(back.slots).flat().length === total, 'remap back to 2-3-1 keeps all ' + total + ' players');
 }
 
 if (failures) { console.log(failures + ' check(s) failed'); process.exit(1); }

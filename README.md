@@ -3,6 +3,7 @@
 Trang web nhỏ cho đội bóng: mỗi trận random lại vị trí để ai cũng được đá vị trí mới. Anh em mở link, chọn tên mình là biết trận nào, ngày giờ nào, đá vị trí gì.
 
 - Sơ đồ chiến thuật sân 5, sân 7, sân 11 (nhìn 3D hoặc 2D), mỗi vị trí một áo. Vị trí có 2 người vẫn một áo, tên ghi `Nam / Khoa`, ai đến sân trước đá trước.
+- Đổi sơ đồ trong cùng loại sân (ví dụ 2-3-1 sang 3-2-1) thì giữ nguyên người, chỉ dời sang vị trí gần nhất. Chạm tên người này rồi chạm tên người khác để đổi chỗ, đưa người lên hoặc xuống tuyến.
 - Random tránh nhóm vị trí mỗi người đã đá ở trận gần nhất. Người vừa đá chung được ưu tiên có vị trí riêng ở trận sau.
 - Vai trò từng người: **Thủ môn chuyên** (có mặt là bắt gôn, không bị random), **Không bắt gôn**, hoặc **Xoay vòng**.
 - Ngày giờ và sân của trận, giờ random, **hẹn giờ bốc thăm** (tới giờ trang tự random, ai mở cũng thấy cùng một kết quả).

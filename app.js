@@ -3,7 +3,7 @@
 'use strict';
 
 var Core = window.LineupCore;
-var computeLineup = Core.computeLineup, pastByPlayer = Core.pastByPlayer, mulberry32 = Core.mulberry32;
+var computeLineup = Core.computeLineup, pastByPlayer = Core.pastByPlayer, mulberry32 = Core.mulberry32, remapLineup = Core.remapLineup;
 
 // ---------- formations ----------
 var FORMATS = [
@@ -440,10 +440,21 @@ function cancelSchedule(){
   save('Đã huỷ hẹn giờ bốc thăm.', 'Huỷ hẹn bốc thăm');
 }
 
+// Same kind of pitch (e.g. 2-3-1 -> 3-2-1): keep everyone and shift them to the nearest spots.
+// Different pitch size (sân 7 -> sân 11): the spots don't line up, so draw again.
 function setFormation(fid){
-  if (!editable() || ui.rolling || !FORMATIONS[fid] || fid === lu().f) return;
-  lu().f = fid;
-  if (isPending()){ commit(); return; }
+  var L0 = lu(), from = L0.f;
+  if (!editable() || ui.rolling || !FORMATIONS[fid] || fid === from) return;
+  if (isPending()){ L0.f = fid; commit(); return; }
+  if (FORMATIONS[from].fmt === FORMATIONS[fid].fmt && Object.keys(L0.slots).length){
+    var res = remapLineup(FORMATIONS[from].slots, FORMATIONS[fid].slots, L0.slots);
+    L0.f = fid; L0.slots = res.slots; L0.waiting = L0.waiting.concat(res.waiting);
+    markEdited(); selected = null; ui.animCards = !reducedMotion();
+    commit();
+    toast('Đã đổi sang ' + FORMATIONS[fid].name + ', giữ nguyên người. Muốn đưa ai lên hoặc xuống tuyến: chạm tên người đó rồi chạm tên người ở tuyến kia.');
+    return;
+  }
+  L0.f = fid;
   if (!roll()){ markEdited(); commit(); }
 }
 
@@ -1096,7 +1107,7 @@ function renderMatch(){
     h += '</div>';
   }
   h += '</div>';
-  if (ed) h += '<p class="hint">Người đi đá đông hơn số vị trí thì một số vị trí có 2 người (trên sân 1 áo, tên ghi “Nam / Khoa”): ai đến sân trước đá trước. Máy xếp mỗi người sang nhóm vị trí khác với trận gần nhất họ đá, và người vừa đá chung sẽ được ưu tiên có vị trí riêng. Chạm một tên rồi chạm tên khác để đổi chỗ. Thủ môn chuyên đặt ở tab Cầu thủ.</p>';
+  if (ed) h += '<p class="hint">Người đi đá đông hơn số vị trí thì một số vị trí có 2 người (trên sân 1 áo, tên ghi “Nam / Khoa”): ai đến sân trước đá trước. Máy xếp mỗi người sang nhóm vị trí khác với trận gần nhất họ đá, và người vừa đá chung sẽ được ưu tiên có vị trí riêng. Chạm một tên rồi chạm tên khác để đổi chỗ, kể cả đưa người lên hoặc xuống tuyến. Đổi sơ đồ trong cùng loại sân thì giữ nguyên người, chỉ dời sang vị trí gần nhất; đổi loại sân thì random lại. Thủ môn chuyên đặt ở tab Cầu thủ.</p>';
   pane.innerHTML = h;
 }
 
